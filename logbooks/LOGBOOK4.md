@@ -34,33 +34,33 @@ As restantes variáveis, por não representarem risco de segurança, permanecem 
 
 ## **Exercício 6**
 
-1. Para este ataque, criamos um arquivo com o código dado no guião:
+1. Para este ataque, criar um arquivo com o código dado no guião:
 
 ![][image1]
 
-2. Em seguida, compilamos o arquivo e transformamo-lo em um programa "Set-UID":
+2. Em seguida, compilar o arquivo e transformá-lo em um programa "Set-UID":
 
 ![][image2]
 
-3. Criamos um arquivo para realizar o ataque:
+3. Criar um arquivo para realizar o ataque:
 
 ![][image3]  
 Este programa cria um arquivo dentro da pasta "tmp" que contém o "euid" do processo.
 
-4. Compilamos o arquivo e preparamos o ataque:
+4. Compilar o arquivo e preparar o ataque:
 
 ![][image4]
 
-5. Ligamos "/bin/sh" a outra *shell* sem o *countermeasure* mencionado no guião com o comando a seguir, para que o ataque funcione:
+5. Ligar "/bin/sh" a outra *shell* sem o *countermeasure* mencionado no guião com o comando a seguir, para que o ataque funcione:
 
 ![][image5]
 
-6. Preparamos o ambiente com o "PATH" malicioso:
+6. Preparar o ambiente com o "PATH" malicioso:
 
 ![][image6]  
 Com isso, ao executar "ls", a *shell* vai encontrar primeiro o "ls" malicioso, e não "/bin/ls".
 
-7. Executamos o programa original, e consequentemente o ataque:
+7. Executar o programa original, e consequentemente o ataque:
 
 ![][image7]  
 Como é possível ver na imagem, o ataque foi executado com sucesso, já que "euid" \= 0 (o que significa que o processo está a correr com privilégios de *root*).  
@@ -125,12 +125,13 @@ Executar o programa "cap\_leak.c" que devolverá o *file descriptor* ("fd") asso
 
 3. **Explicação técnica:** 
  
-O programa "cap\_leak.c", quando executado, possui permissões de *root* por ser um programa "Set-UID" pertencente ao *root*. De seguida, ele abre o ficheiro "/etc/zzz" com o modo de acesso "O\_RDWR", que concede permissões de leitura e escrita e com o modo "O\_APPEND" e guarda o *file descriptor* ("fd") dele. A seguir, o programa corre o comando "setui(getuid())" que lhe retira os privilégios que ele possuía até agora, no entanto, aqui também está a oportunidade de ataque. Um utilizador normal não teria acesso ao ficheiro "/etc/zzz" para escrita, no entanto, "cap\_leak.c" tem um "fd", cuja entrada na *file table* indica permissões de escrita e leitura relativamente a "/etc/zzz", permissões, estas, atribuídas quando o programa ainda tinha permissões *root* e que se mantêm apesar do *downgrade* de capacidades do programa, pois essa entrada não foi fechada ainda, dando-se assim um *capability leak*. Assim, quando o programa retorna uma *shell* e o "fd" privilegiado ("fd"=3 neste caso), podemos executar o comando “echo “Hello, I’m a normal user” \>&3”, que escreverá, para o ficheiro "/etc/zzz" com o "fd" privilegiado, pelo que uma operação que não deveria ter sido permitida, foi, pois o "fd" fornecido tem permissões de escrita para o ficheiro protegido.  
+O programa "cap\_leak.c", quando executado, possui permissões de *root* por ser um programa "Set-UID" pertencente ao *root*. De seguida, ele abre o ficheiro "/etc/zzz" com o modo de acesso "O\_RDWR", que concede permissões de leitura e escrita e com o modo "O\_APPEND" e guarda o *file descriptor* ("fd") dele. A seguir, o programa corre o comando "setuid(getuid())" que lhe retira os privilégios que ele possuía até agora, no entanto, aqui também está a oportunidade de ataque. Um utilizador normal não teria acesso ao ficheiro "/etc/zzz" para escrita, no entanto, "cap\_leak.c" tem um "fd", cuja entrada na *file table* indica permissões de escrita e leitura relativamente a "/etc/zzz", permissões, estas, atribuídas quando o programa ainda tinha permissões *root* e que se mantêm apesar do *downgrade* de capacidades do programa, pois essa entrada não foi fechada ainda, dando-se assim um *capability leak*. Assim, quando o programa retorna uma *shell* e o "fd" privilegiado ("fd"=3 neste caso), podemos executar o comando “echo “Hello, I’m a normal user” \>&3” ", que escreverá, para o ficheiro "/etc/zzz" com o "fd" privilegiado, pelo que uma operação que não deveria ter sido permitida, foi, pois o "fd" fornecido tem permissões de escrita para o ficheiro protegido.  
      
 4. **Medidas de mitigação:**  
 
-Algumas maneiras simples de evitar isto seriam: abrir ficheiros apenas após a redução de privilégios ("setuid") quando possível, fechar *file descriptors* antes de dar controlo ao utilizador, atribuir a um programa apenas os privilégios mínimos necessários ao seu funcionamento e evitar declarar programas como "Set-UID" quando desnecessário.  
-Para além disso, deve-se evitar atribuir permissões desnecessárias a programa e, para isso, é possível utilizar funções disponibilizadas como cap_set_proc() e comandos como setcap para atribuir apenas as capcidades necessárias e removê-las assim que a sua utilidade termine.    
+Algumas maneiras simples de evitar isto seriam: abrir ficheiros apenas após a redução de privilégios ("setuid") quando possível, fechar *file descriptors* antes de dar controlo ao utilizador, atribuir a um programa apenas os privilégios mínimos necessários ao seu funcionamento e evitar declarar programas como "Set-UID" quando desnecessário.
+Para além disso, deve-se evitar atribuir permissões desnecessárias a programa e, para isso, é possível utilizar funções disponibilizadas como "cap_set_proc" e comandos como "setcap" para atribuir apenas as capacidades necessárias e removê-las assim que a sua utilidade termine.
+
 5. **Evidência final e Conclusões:**  
 
 Este exercício ajudou a demonstrar o quão perigoso é ter programas a ser executados com permissões excessivas e os riscos de entregar este género de privilégios ao utilizador durante a execução do processo.
