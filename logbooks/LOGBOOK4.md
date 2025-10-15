@@ -130,7 +130,7 @@ O programa "cap\_leak.c", quando executado, possui permissões de *root* por ser
 4. **Medidas de mitigação:**  
 
 Algumas maneiras simples de evitar isto seriam: abrir ficheiros apenas após a redução de privilégios ("setuid") quando possível, fechar *file descriptors* antes de dar controlo ao utilizador, atribuir a um programa apenas os privilégios mínimos necessários ao seu funcionamento e evitar declarar programas como "Set-UID" quando desnecessário.  
-     
+Para além disso, deve-se evitar atribuir permissões desnecessárias a programa e, para isso, é possível utilizar funções disponibilizadas como cap_set_proc() e comandos como setcap para atribuir apenas as capcidades necessárias e removê-las assim que a sua utilidade termine.    
 5. **Evidência final e Conclusões:**  
 
 Este exercício ajudou a demonstrar o quão perigoso é ter programas a ser executados com permissões excessivas e os riscos de entregar este género de privilégios ao utilizador durante a execução do processo.
