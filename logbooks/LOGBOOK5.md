@@ -10,7 +10,8 @@ A seguir, compilou-se e executaram-se os shell codes de 32-bit e 64-bit e nenhum
 
 ![](./images/im2.png)
 
-Na Task 2, criamos o “badfile”, alterámos o valor L1 na Makefile, como pedido, para 108 (100 + 8 * G, em que G = 1) e compilamos com make stack-L1 (o que tornout, também stack-L1 num SetUID, mas não stack-L1-dbg, detalhe este que será relevante mais à frente).
+Na Task 2, criamos o “badfile”, alterámos o valor L1 na Makefile, como pedido, para 108 (100 + 8 * G, em que G = 1) e compilamos com make stack-L1, que definiu stack-L1 como SetUID, mas não stack-L1-dbg, detalhe este que será relevante mais à frente.
+Stack-L1 sofre de um possível buffer overflow, uma vez que, em bof, é copiado para um buffer com tamanho máximo de 108 bytes (no nosso caso), uma string com tamanho máximo de 517 bytes recorrendo a strcpy, função esta que não verifica acessos "out-of-bounds", resultando na possibilidade de escrever 517 bytes para um bufer de tamnho 100.
 
 ![](./images/im3.png)
 
@@ -26,11 +27,11 @@ Definimos a função bof como o breakpoint:
 
 ![](./images/im7.png)
 
-Executamos o programa com "run" e, de seguida, corremos o comando "next" para que o registo ebp (frame pointer) fosse atualizado para o valor do início do stack frame dedicado de bop:
+Executamos o programa com "run" e, de seguida, corremos o comando "next" para que o registo ebp (frame pointer) fosse atualizado para o valor do início do stack frame de bop:
 
 ![](./images/im8.png)
 
-Agora, é importante descobrir os valores de ebp e de buffer, uma vez que, para conseguirmos executar propriamente o exploit, será necessário chegar ao return address posicionado acima do frame pointer anterior que se encontra, por sua vez, imediatamente acima do stack frame do bop. Ora, isto que dizer que, para reescrevermos o return address com o valor pretendido, temos de o colocar na posição (offset buffer-ebp) + 4, uma vez que correponderá à distância entre a primeira posição do buffer e o início do stack frame  mais os 4 bytes necessários para ultrapassar o frame pointer anterior e chegar ao return address.
+Agora, é importante descobrir os valores de ebp e de buffer, uma vez que, para conseguirmos executar propriamente o exploit, será necessário reescrever o return address posicionado acima do frame pointer anterior que se encontra, por sua vez, imediatamente acima do stack frame do bop. Ora, isto que dizer que, para reescrevermos o return address com o valor pretendido, temos de o colocar na posição (offset buffer-ebp) + 4, uma vez que correponderá à distância entre a primeira posição do buffer e o início do stack frame  mais os 4 bytes necessários para ultrapassar o frame pointer anterior e chegar ao return address.
 
 Para isso, executamos os seguintes comandos no gdb e obtivemos os respetivos valores:
 
@@ -40,14 +41,15 @@ Com estes valores podemos obter o seu offset: 0x76 = 116.
 
 ![](./images/im10.png)
 
-Sendo assim, temos o que precisarmos para tentarmos criar o nosso exploit. O exploit, cujo esqueleto se encontra em exploit.py, insere no ficheiro "badfile" texto com um tamanho de 517 e, como o buffer em bof só está capacitado a receber 108 chars (bytes), haverá um buffer overflow.
+Sendo assim, temos o que precisarmos para tentarmos criar o nosso exploit. O exploit, cujo esqueleto se encontra em exploit.py, insere, no ficheiro "badfile", texto com um tamanho de 517 chars (bytes) e, como o buffer em bof só está capacitado a receber 108 chars (bytes), haverá um buffer overflow.
 1. O offset do return address deverá ser, como indicado anteriormente, de 116 + 4, ou seja, 120.
 2. O shellcode foi copiado diretamente do shellcode de 32-bit fornecido na Task 1.
-3. O offset do shellcode, com base nos slides da aula teórica, deve estar posicionado acimado return address e, como tal, arbitrariamente, atribuímo-lhe o offset de 300. Isto é representado pela imagem abaixo retira dos slides da aula teórica ("Software Security (Part 1)")
+3. O offset do shellcode, com base nos slides da aula teórica, deve estar posicionado acima do return address e, como tal, arbitrariamente, atribuímo-lhe o offset de 300. Isto é representado pela imagem abaixo retirada dos slides da aula teórica ("Software Security (Part 1)")
 
 ![](./images/im11.png)
 
-4. Quanto ao return address, como o shellcode se encontra acima do return address e para evitar que o programa tentasse executar alguma sequência de bits que não NOPs ou o shellcode, o que resultaria no risco de o programa falhar, atribuímo-lhe o endereço de ebp mais um offset (0xffffcab8 + 100), relativamente arbitrário, de modo a que o resultado seja superior à posição do return address, mas inferior ao do shellcode. Tentar atribuir um offset preciso, ou seja, diretamente para o shellcode é desnecessário, por causa da presença dos NOPs e propenso a falhas, pois, como se verá a seguir, quando o valor dos endereços da stack variam, o exploit deixa de funcionar (tentativas de apontar diretamente para o shellcode serão apresentadas no fundo do relatório).
+4. Quanto ao return address, como o shellcode se encontra acima do return address e para evitar que o programa tentasse executar alguma sequência de bits que não NOPs ou o shellcode, o que resultaria no risco de o programa falhar, atribuímo-lhe o endereço de ebp mais um offset (0xffffcab8 + 100), relativamente arbitrário, de modo a que o resultado seja superior à posição do return address, mas inferior ao do shellcode. 
+Tentar atribuir um offset preciso, ou seja, diretamente para o shellcode é desnecessário, devido à presença dos NOPs que nos permitem retornar para antes do shellcode, desde que não haja bytes "inválidos" pelo "caminho", uma vez que a CPU executará esses NOPs até chegar ao shellcode. Para além disso, esse método (apontar diretamente para o shellcode) é, também, propenso a falhas, pois, como se verá a seguir, quando o valor dos endereços da stack variam, o exploit pode deixar de funcionar.
 
 Terminamos com o seguinte exploit.py: 
 
@@ -61,7 +63,7 @@ Para confirmar se o exploit realmente funciona, voltamos a executar stack-L1-dbg
 
 ![](./images/im14.png)
 
-Executando stack-L1-dbg como "/home/seed/Desktop/labs/seed-labs/category-software/Buffer_Overflow_Setuid/Labsetup/code/stack-L1" fora do GDB, podemos verificar que o exploit funcionou novamente, mas, mais uma vez, é uma shell normal pelo motivo acima referido.
+Executando stack-L1-dbg como "/home/seed/Desktop/labs/seed-labs/category-software/Buffer_Overflow_Setuid/Labsetup/code/stack-L1-dbg" fora do GDB, podemos verificar que o exploit funcionou novamente, mas, mais uma vez, é uma shell normal pelo motivo acima referido.
 
 ![](./images/im15.png)
 
@@ -71,7 +73,7 @@ Se agora tentarmos executar o programa stack-L1 da seguinte forma: "/home/seed/D
 
 ![](./images/im17.png)
 
-No entanto, se tentarmos executar como ./stack-L1, o programa falha com "Segmentation Fault". Isto deve-se ao facto de, por exemplo argv[0] ser menor, logo os endereços são diferentes e o return address foi dar a resultar nalgum endereço inválido (ou porque o programa executou NOPs até chegar a bytes que não correspondem a instruções válidas, ou porque o return address apontava diretamente para um desses bytes). 
+No entanto, se tentarmos executar como ./stack-L1, o programa falha com "Segmentation Fault". Isto deve-se ao facto de, por exemplo argv[0] ser menor, logo os endereços da stack são diferentes e o return address aponta para algum endereço inválido (ou porque o programa executou NOPs até chegar a bytes que não correspondem a instruções válidas, ou porque o return address apontava diretamente para esses bytes "inválidos"). 
 
 ![](./images/im18.png)
 
@@ -102,11 +104,11 @@ E corre-se o comando "next" duas vezes, isto é, após a execução do strcpy e 
 
 ![](./images/im24.png)
 
-A imagem abaixo corresponde aos 85 primeiros endereços de 32 bits:
+A imagem abaixo corresponde aos 84 primeiros endereços de 32 bits:
 
 ![](./images/im25.png)
 
-E, abaixo, podemos verificar que o shellcode começa a partir do endereço 0xffffcb70 e o return address encontra-se no endereço 0xffffcabc (0xffffcab8 + 4 tal como o esperado).
+E, abaixo, podemos verificar que o shellcode começa a partir do endereço 0xffffcb70 e o return address encontra-se no endereço 0xffffcabc (0xffffcab8 + 4 tal como o pretendido). O return address
 
 ![](./images/im26.png)
 ![](./images/im27.png)
