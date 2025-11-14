@@ -155,3 +155,28 @@ Ao corrigir o *payload*, foi possível obter a quantidade correta de bytes:
 
 ## **Questão 2**
 
+Não, não precisa que a format string esteja sempre na stack para existir vulnerabilidade. A vulnerabilidade existe sempre que dados controlados pelo utilizador são usados diretamente como format string, independentemente de estarem na stack, heap ou data segment — isso já é suficiente para permitir format-string attacks (CWE-134).
+
+Mas, das tarefas do laboratório, nem todos os ataques funcionariam se a format string estivesse na heap.
+
+Os ataques que deixariam de funcionar seriam aqueles que dependem de ler ou escrever posições relativas na stack.
+
+Resumidamente:
+
+- Task 2.A — Ler dados da stack
+
+Este ataque supõe que a própria format string está na stack e que, ao usar muitos %x, conseguimos “varrer” a stack até chegar aos nossos 4 bytes iniciais.
+Se a format string estivesse na heap, estes offsets mudariam totalmente e os %x não iriam alcançar os bytes da nossa entrada, porque eles não estariam na mesma região da memória acessível via varredura de argumentos da função printf.
+
+- Task 3.A e Task 3.B — Escrita arbitrária usando %n
+
+O ataque funciona porque conseguimos controlar os argumentos posicionados na stack e colocar o endereço-alvo exatamente onde o printf espera encontrar o endereço para o %n.
+Se a format string estivesse na heap, os endereços que fornecemos não estariam na stack, então o %n não conseguiria pegar o endereço correto para escrever — o ataque deixaria de ser viável desta forma.
+
+- Task 2.B — Ler dados do heap
+
+Este ataque continuaria funcionando, porque nele nós colocamos explicitamente o endereço do secret na própria entrada, e o printf lê esse endereço como argumento, independemente de onde a própria format string está localizada.
+Ou seja, a posição da format string não afeta este ataque.
+
+
+
