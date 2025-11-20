@@ -72,8 +72,6 @@ anteriormente na *task* 2, isto é, os cookies do utilizador "alice":
 
 ## Questão 2
 
-Há várias modalidades de ataques XSS (Reflected, Stored ou DOM). Em qual/quais pode enquadrar este ataque e porquê?
-
 As *tasks* 1-3 representam ataques do tipo *Stored* XSS, já que envolvem guardar um código JavaScript malicioso na base de dados. 
 
 Nestes casos, o código é guardado no campo "Brief Description" do perfil do utilizador "alice". Quando um utilizador acessa esse perfil, o código é executado.
