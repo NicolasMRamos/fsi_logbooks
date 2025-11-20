@@ -114,7 +114,7 @@ A partir da conta da Alice, é possível ver o ataque em ação. Abrindo o perfi
 Como a secção do "About Me" só é renderizada pelo browser após a renderização do botão "Add friend", a adição não é instantaneamente visível, mas, se dermos refresh à página, veremos que o botão agora aparece como "Remove friend" indicando que o ataque do Samy foi bem sucedido.
 ![](./images/guiao7/samyprofilealiceafter.png)
 
-Tentamos uma segunda vez com a conta do Boby:
+Tentamos uma segunda vez com a conta do Boby: <br>
 ![](./images/guiao7/boby.png)
 
 E o resultado foi o mesmo, abrindo o perfil do Samy:
