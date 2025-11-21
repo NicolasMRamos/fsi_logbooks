@@ -2,7 +2,7 @@
 
 ## Setup do Ambiente
 
-Primeiramente, temos de colocar os websites para os ataques na pasta "/etc/hosts", para que sejam acessíveis após a iniciação dos containers:
+Primeiramente, temos de colocar os websites para os ataques no ficheiro "/etc/hosts", para que sejam acessíveis após a iniciação dos containers:
 
 ![](./images/guiao7/cathostspt1.png)
 ![](./images/guiao7/cathostspt2.png)
@@ -68,6 +68,16 @@ anteriormente na *task* 2, isto é, os cookies do utilizador "alice":
 
 ![](./images/guiao7/xsstask3.png)
 
+Também testamos o ataque com outra conta de utilizador ("boby"):
+
+![](./images/guiao7/bobyview.png)
+
+Verificando o terminal com o servidor TCP, foi possível obter os cookies dessa sessão:
+
+![](./images/guiao7/bobyleaked.png)
+
+Ou seja, o ataque funciona também fora do perfil do utilizador atacante: isto significa que os dados estão, realmente, a ser guardados na base de dados.
+
 ### Task 4
 
 Para a task 4, o objetivo é fazer com que, quando algum utilizador entre no nosso perfil (o perfil do Samy neste caso), o visitante se torne amigo do Samy (inspirado na Samy Worm). 
@@ -103,7 +113,7 @@ Isto leva-nos a suspeitar que o ID do Samy será 59, mas, para confirmar, iremos
 Ao analisar os pedidos enviados ao abrir o perfil do Samy, encontramos o seguinte pedido, análogo ao pedido no perfil da Alice:
 ![](./images/guiao7/samylargeimage.png)
 
-Sendo assim, que o ID do Samy é o 59 e podemos começar a montar o ataque. O script fornecido pelo guião dá-nos a base que utilizaremos, incluindo, a obtenção dos elgg_ts e do elgg_token, pelo que apenas teremos que montar o URL. O URL será igual ao do pedido HTTP analisado inicialmente até aos atributos que serão: "friends=59" + ts + token + ts + token (ts e token estão definidos no script como a string "&__elgg_ts=" + elgg.security.token.__elgg_ts e "&__elgg_token=" + elgg.security.token.__elgg_token, respetivamente, que permitem obter os valores dos tokens de segurança anteriormente referidos). Sendo assim, ficamos com o script seguinte:
+Sendo assim, sabemos que o ID do Samy é o 59 e podemos começar a montar o ataque. O script fornecido pelo guião dá-nos a base que utilizaremos, incluindo, a obtenção dos elgg_ts e do elgg_token, pelo que apenas teremos que montar o URL. O URL será igual ao do pedido HTTP analisado inicialmente até aos atributos que serão: "friends=59" + ts + token + ts + token (ts e token estão definidos no script como a string "&__elgg_ts=" + elgg.security.token.__elgg_ts e "&__elgg_token=" + elgg.security.token.__elgg_token, respetivamente, que permitem obter os valores dos tokens de segurança anteriormente referidos). Sendo assim, ficamos com o script seguinte:
 ![](./images/guiao7/scripttask4.png)
 
 Agora, guardamos este script no "About Me" do perfil do Samy recorrendo ao modo texto para que, quando alguém abrir o perfil do Samy, o browser execute o script.
