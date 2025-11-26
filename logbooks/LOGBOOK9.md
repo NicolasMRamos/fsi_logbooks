@@ -9,7 +9,41 @@ Para este lab, será necessário apenas fazer setup dos containers docker inclu�
 
 ## Tarefa 1
 
+Utilizando a frequência com que as letras e combinações apareçem no texto (obtidas a partir do programa "freq.py"), podemos inferir
+sobre o que algumas delas representam. Por exemplo:
 
+![](images/guiao9/1gramfreq.png)
+
+Aqui, podemos pensar que, na cifra, n representa uma vogal, já que são as letras mais comuns em textos, num geral.
+
+De acordo com a Wikipedia, "the" é o trigrama mais comum no Inglês:
+
+![](images/guiao9/3gramex.png)
+
+Verificando a frequência dos trigramas:
+
+![](images/guiao9/3gramfreq.png)
+
+Podemos assumir que "ytn" corresponde a "the".
+
+Para fazer essa substituição, executamos o comando "tr":
+
+![](images/guiao9/trcomm.png)
+
+Comparando os arquivos, é possível verificar as mudanças:
+
+![](images/guiao9/catcipher.png)
+
+![](images/guiao9/catout.png)
+
+Nessa fase inicial, conseguimos descobrir outras letras e palavras a partir da análise de outras frequências.
+Depois de um certo ponto, podemos descobrir as outras letras por intuição, pois estarão mais completas.
+
+No final, descobrimos que a cifra é a seguinte:
+
+![](images/guiao9/trcommtranslated.png)
+
+O arquivo final traduzido está em "translated.txt".
 
 ## Tarefa 2
 
