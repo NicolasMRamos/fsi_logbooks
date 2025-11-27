@@ -37,11 +37,43 @@ Comparando os arquivos, é possível verificar as mudanças:
 ![](images/guiao9/catout.png)
 
 Nessa fase inicial, conseguimos descobrir outras letras e palavras a partir da análise de outras frequências.
-Depois de um certo ponto, podemos descobrir as outras letras por intuição, pois estarão mais completas.
+Depois de um certo ponto, podemos descobrir as outras letras por intuição, pois as palavras estarão mais completas.
 
-No final, descobrimos que a cifra é a seguinte:
+No final, descobrimos que a encriptação é a seguinte:
 
-![](images/guiao9/trcommtranslated.png)
+| Ciphertext | Plaintext |
+|---|---|
+| a | c |
+| b | f |
+| c | m |
+| d | y |
+| e | p |
+| f | v |
+| g | b | 
+| h | r |
+| i | l |
+| j | q |
+| k | x |
+| l | w |
+| m | i |
+| n | e |
+| o | j |
+| p | d |
+| q | s |
+| r | g |
+| s | k |
+| t | h |
+| u | n |
+| v | a |
+| w | z |
+| x | o |
+| y | t |
+| z | u |
+
+Aplicando o comando ao arquivo "ciphertext.txt", podemos verificar que o primeiro e segundo parágrafos se encontram completamente decifrados e sem erros de escrita:
+
+![](images/guiao9/trcommfull.png)
+![](images/guiao9/fstsndparag.png)
 
 O arquivo final traduzido está em "translated.txt".
 
