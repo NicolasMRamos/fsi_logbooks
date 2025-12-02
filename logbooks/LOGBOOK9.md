@@ -79,9 +79,88 @@ O arquivo final traduzido está em "translated.txt".
 
 ## Tarefa 2
 
-Considere os modos de cifra aes-128-ecb; aes-128-cbc e aes-128-ctr. Gere um ficheiro plaintext.txt com pelo menos 1000 bytes, e cifre-o com estes três modos, respondendo aos seguintes pontos:
-- Ao cifrar, que flags teve que especificar? Qual a diferença entre estes diversos modos?
-- Ao decifrar, que flags teve que especificar? Qual a diferença principal entre aes-128-ctr e os restantes modos?
+Para a tarefa 2, criamos um arquivo "plaintext.txt" contendo 1005 caracteres, isto é, 1005 bytes:
+
+![](images/guiao9/plaintext1s.png)
+![](images/guiao9/content1s.png)
+
+Como teremos que cifrá-lo utilizando aes-128, será necessário gerar uma chave de 128 bits/16 bytes:
+
+![](images/guiao9/keygen.png)
+
+Essa será a chave utilizada para as cifras: 68bb9bf5d92aa97d0ae67470ef411658.
+
+### aes-128-ecb
+
+Para a primeira cifra, utilizamos o seguinte comando:
+
+![](images/guiao9/encryptecb.png)
+
+A flag "-aes-128-ecb" indica a cifra utilizada, "-in" e "-out" indicam os arquivos de input e output respectivamente, e "-K" indica a chave utilizada.
+Como o modo de encriptação é o *default*, podemos omitir a flag "-e".
+
+Este modo de encriptação não necessita de um vetor de inicialização, pelo que a flag "-iv" não é utilizada.
+
+Após o comando, verificamos que o arquivo foi cifrado corretamente:
+
+![](images/guiao9/encryptedecb.png)
+
+Para decifrar o arquivo, será necessário utilizar a flag "-d", indicando modo de decriptação. Para além disso, devemos também modificar o arquivo de entrada para o arquivo cifrado:
+
+![](images/guiao9/decryptedecb.png)
+
+Com isso, temos o arquivo original novamente, decifrado com sucesso.
+
+### aes-128-cbc
+
+Para a segunda cifra, já será necessário utilizar a flag "-iv", pois este modo requer um vetor de inicialização. Este vetor tem de ter 128 bits, ou 16 bytes, ou seja, podemos gerar outra chave e utilizá-la como o nosso VI:
+
+![](images/guiao9/ivcbc.png)
+
+O VI será então: a3bac8c98fb428493efe987a52e4f6f4.
+
+Com isso, podemos cifrar:
+
+![](images/guiao9/encryptcbc.png)
+
+E decifrar o arquivo plaintext.txt:
+
+![](images/guiao9/decryptcbc.png)
+![](images/guiao9/catdecrypted.png)
+
+### aes-128-ctr
+
+Para a última cifra, também será necessário um vetor de inicialização. Utilizando a mesma chave e VI anteriores:
+
+![](images/guiao9/encryptctr.png)
+
+Decifrando o arquivo:
+
+![](images/guiao9/decryptctr.png)
+
+### Questões
+
+Ao cifrar, foi necessário especificar as flags:
+* "-aes-128-[mode]" para indicar o modo de encriptação;
+* "-in" e "-out" para indicar os arquivos de entrada e saída;
+* "-K" para especificar a chave utilizada;
+* "-iv" APENAS para os modos cbc e ctr, pois estes necessitavam vetor de inicialização.
+
+O modo "ecb" utiliza apenas a chave para encriptação, e cada bloco é cifrado isoladamente. Blocos iguais dão saídas iguais.
+
+No modo "cbc", o vetor de inicialização é utilizado para cifrar o primeiro bloco: a partir disso a cifra de cada bloco depende do bloco anterior.
+
+O modo "ctr" possui, além da chave e do VI, um contador. Cada bloco é cifrado com a chave, VI e contador, garantindo que blocos iguais tenham cifras diferentes.
+
+Ao decifrar, foi necessário especificar as flags:
+* "-aes-128-[mode]" para indicar o modo de encriptação;
+* "-d" para o comando decifrar o arquivo de entrada, ao invés de cifrar;
+* "-in" e "-out" para indicar os arquivos de entrada e saída;
+* "-K" para especificar a chave utilizada;
+* "-iv" APENAS para os modos "cbc" e "ctr", pois estes necessitavam vetor de inicialização.
+
+A principal diferença entre o modo "ctr" e os demais é o contador. 
+Ele permite que o "ctr" funcione como uma cifra de *stream*: um fluxo de bits semi-aleatórios (chave + VI + contador) é utilizado para cifrar o conteúdo original.
 
 ## Tarefa 5
 
@@ -129,7 +208,7 @@ print("The plain text is:", plain_text)
 
 ```
 
-E o resutado foi o seguinte:
+E o resultado foi o seguinte:
 
 ![](images/guiao9/resultado_desafio.png)
 
