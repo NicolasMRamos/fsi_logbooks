@@ -100,7 +100,7 @@ O desafio consiste em decifrar o criptograma fornecido, encriptado por uma cifra
 Criptograma: N516MHZIFBN5OEDSVKGIY9WD7T4MD9YBP6MJDWDPY0WFOF2MAOXBWDGNX6GPH62D8K3Q4FFA4AOHZIF8T7MFTTCZVMIW66TTCLK9JBP2O1W09JZ3LF90WZ39FXZ2DIBW5DJ9QK9Z7IF8YSS6OMWXGRJ9J27P01KON4MLCJ
 
 Para descobrir a chave, o processo foi bastante simples e a chave foi facilmente descoberta numa só tentativa. A pista fornecida é: "Fundamentos de Segurança Informática". Uma das primeiras opções de que nos lembramos foi utilizar a sigla composta pela primeira letra de cada uma das palavras. Sendo assim, obtivemos uma chave de 3 elementos: FSI.
-A presença de números nos símbolos válidos leva-nos a ponderar que a chave também conterá números. Ora, uma das opções mais comuns, frequentemente utilizadas noutras disciplinas, é a sigla da disciplina seguida do ano civil ou letivo. Como apenas faltam 2 elementos da chave, concluímos que, provavelmente, seria o ano civil. Sendo assim, como estamos em 2025, extraímos 25.
+A presença de números nos símbolos válidos leva-nos a ponderar que a chave também conterá números. Ora, uma das opções mais comuns, frequentemente utilizada noutras disciplinas, é a sigla da disciplina seguida do ano civil ou letivo. Como apenas faltam 2 elementos da chave, concluímos que, provavelmente, seria o ano civil. Sendo assim, como estamos em 2025, extraímos 25.
 Isto resulta na seguinte chave: **FSI25**.
 
 Para testar a nossa chave, criámos o seguinte script em Python para decifrar a mensagem:
