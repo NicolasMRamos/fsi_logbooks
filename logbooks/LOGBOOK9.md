@@ -164,6 +164,47 @@ Ele permite que o "ctr" funcione como uma cifra de *stream*: um fluxo de bits se
 
 ## Tarefa 5
 
+### Cifra com ecb
+
+Utilizando a mesma chave da tarefa 2 (68bb9bf5d92aa97d0ae67470ef411658), encriptamos o arquivo "plaintext.txt":
+
+![](images/guiao9/encryptecb5.png)
+
+Após isso, utilizamos o editor de hex *bless* para alterar o byte 50, como pedido no guião (grupo 1 --> 50*1 = 50):
+
+![](images/guiao9/blesscmd.png)
+
+![](images/guiao9/normalecb.png)
+
+![](images/guiao9/corruptecb.png)
+
+Ao tentar decifrar o arquivo, é possível verificar a corrupção:
+
+![](images/guiao9/corruptedecb.png)
+
+Neste caso, o número de bytes corrompidos esperado deverá ser 16 bytes: a cifra aes-128 processa blocos de 128 bits de cada vez, que corresponde a 16 bytes.
+Um byte corrompido num bloco resulta na corrupção do bloco todo.
+
+Utilizando o comando seguinte, podemos verificar o número de bytes que diferem nos dois arquivos:
+
+![](images/guiao9/cmpecb.png)
+
+"cmp -l" mostra os bytes que diferem nos dois arquivos, e "wc -l" retorna a quantidade de linhas do output do comando anterior.
+
+Como obtemos 16, é possível confirmar o resultado teórico apresentado anteriormente.
+
+### Cifra com cbc
+
+Utilizando a mesma chave e VI da tarefa 2:
+
+
+
+### Cifra com ctr
+
+Utilizando a mesma chave e VI da tarefa 2:
+
+
+
 Utilize o ficheiro plaintext.txt gerado anteriormente, e considere os três modos de cifra especificados anteriormente. Altere o byte 50*G, onde G é o número do vosso grupo prático (de 1 a 9) -- pode utilizar o editor bless, já instalado no ambiente disponibilizado.
 
 Para cada um dos modos de cifra, indique quantos bytes de informação se perdem ao corromper um byte do criptograma. Verifique se esta perda se verifica quando se tenta ler a decifração dos criptogramas alterados.
