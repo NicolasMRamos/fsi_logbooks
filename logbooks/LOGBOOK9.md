@@ -164,9 +164,16 @@ Ele permite que o "ctr" funcione como uma cifra de *stream*: um fluxo de bits se
 
 ## Tarefa 5
 
+Para a tarefa 5, foram utilizados a mesma chave e vetor de inicialização da tarefa 2:
+
+| | |
+| -- | ------------------------------- |
+| K | 68bb9bf5d92aa97d0ae67470ef411658 |
+| VI | a3bac8c98fb428493efe987a52e4f6f4 |
+
 ### Cifra com ecb
 
-Utilizando a mesma chave da tarefa 2 (68bb9bf5d92aa97d0ae67470ef411658), encriptamos o arquivo "plaintext.txt":
+Ciframos o arquivo "plaintext.txt" novamente, com o modo "ecb":
 
 ![](images/guiao9/encryptecb5.png)
 
@@ -182,26 +189,39 @@ Ao tentar decifrar o arquivo, é possível verificar a corrupção:
 
 ![](images/guiao9/corruptedecb.png)
 
-Neste caso, o número de bytes corrompidos esperado deverá ser 16 bytes: a cifra aes-128 processa blocos de 128 bits de cada vez, que corresponde a 16 bytes.
-Um byte corrompido num bloco resulta na corrupção do bloco todo.
-
 Utilizando o comando seguinte, podemos verificar o número de bytes que diferem nos dois arquivos:
 
 ![](images/guiao9/cmpecb.png)
 
 "cmp -l" mostra os bytes que diferem nos dois arquivos, e "wc -l" retorna a quantidade de linhas do output do comando anterior.
 
-Como obtemos 16, é possível confirmar o resultado teórico apresentado anteriormente.
+O arquivo original teve 16 bytes corrompidos com o modo "ecb".
 
 ### Cifra com cbc
 
-Utilizando a mesma chave e VI da tarefa 2:
+Ciframos o arquivo "plaintext.txt" novamente, com o modo "cbc":
 
+![](images/guiao9/encryptcbc5.png)
 
+Utilizamos o *bless* novamente para modificar o byte 50:
+
+![](images/guiao9/normalcbc.png)
+
+![](images/guiao9/corruptcbc.png)
+
+Ao decifrar o arquivo, verificamos a corrupção:
+
+![](images/guiao9/corruptedcbc.png)
+
+Utilizando novamente o comando de comparação:
+
+![](images/guiao9/cmpcbc.png)
+
+Ou seja, tivemos 17 bytes corrompidos com o modo "cbc".
 
 ### Cifra com ctr
 
-Utilizando a mesma chave e VI da tarefa 2:
+Ciframos o arquivo "plaintext.txt" novamente, com o modo "ctr":
 
 
 
