@@ -123,7 +123,7 @@ Com isso, podemos cifrar:
 
 ![](images/guiao9/encryptcbc.png)
 
-E decifrar o arquivo plaintext.txt:
+E decifrar o arquivo "plaintext.txt":
 
 ![](images/guiao9/decryptcbc.png)
 ![](images/guiao9/catdecrypted.png)
@@ -146,21 +146,21 @@ Ao cifrar, foi necessário especificar as flags:
 * "-K" para especificar a chave utilizada;
 * "-iv" APENAS para os modos cbc e ctr, pois estes necessitavam vetor de inicialização.
 
-O modo "ecb" utiliza apenas a chave para encriptação, e cada bloco é cifrado isoladamente. Blocos iguais dão saídas iguais.
+O modo ECB utiliza apenas a chave para encriptação, e cada bloco é cifrado isoladamente. Blocos iguais dão saídas iguais.
 
-No modo "cbc", o vetor de inicialização é utilizado para cifrar o primeiro bloco: a partir disso a cifra de cada bloco depende do bloco anterior.
+No modo CBC, o vetor de inicialização é utilizado para cifrar o primeiro bloco: a partir disso a cifra de cada bloco depende do bloco anterior.
 
-O modo "ctr" possui, além da chave e do VI, um contador. Cada bloco é cifrado com a chave, VI e contador, garantindo que blocos iguais tenham cifras diferentes.
+O modo CTR possui, além da chave e do VI, um contador. Cada bloco é cifrado com a chave, VI e contador, garantindo que blocos iguais tenham cifras diferentes.
 
 Ao decifrar, foi necessário especificar as flags:
 * "-aes-128-[mode]" para indicar o modo de encriptação;
 * "-d" para o comando decifrar o arquivo de entrada, ao invés de cifrar;
 * "-in" e "-out" para indicar os arquivos de entrada e saída;
 * "-K" para especificar a chave utilizada;
-* "-iv" APENAS para os modos "cbc" e "ctr", pois estes necessitavam vetor de inicialização.
+* "-iv" APENAS para os modos CBC e CTR, pois estes necessitavam vetor de inicialização.
 
-A principal diferença entre o modo "ctr" e os demais é o contador. 
-Ele permite que o "ctr" funcione como uma cifra de *stream*: um fluxo de bits semi-aleatórios (chave + VI + contador) é utilizado para cifrar o conteúdo original.
+A principal diferença entre o modo CTR e os demais é o contador. 
+Ele permite que o CTR funcione como uma cifra de *stream*: um fluxo de bits semi-aleatórios (chave + VI + contador) é utilizado para cifrar o conteúdo original.
 
 ## Tarefa 5
 
@@ -171,9 +171,9 @@ Para a tarefa 5, foram utilizados a mesma chave e vetor de inicialização da ta
 | K | 68bb9bf5d92aa97d0ae67470ef411658 |
 | VI | a3bac8c98fb428493efe987a52e4f6f4 |
 
-### Cifra com ecb
+### Cifra com ECB
 
-Ciframos o arquivo "plaintext.txt" novamente, com o modo "ecb":
+Ciframos o arquivo "plaintext.txt" novamente, com o modo ECB:
 
 ![](images/guiao9/encryptecb5.png)
 
@@ -185,21 +185,21 @@ Após isso, utilizamos o editor de hex *bless* para alterar o byte 50, como pedi
 
 ![](images/guiao9/corruptecb.png)
 
-Ao tentar decifrar o arquivo, é possível verificar a corrupção:
+Ao decifrar o arquivo, é possível verificar a corrupção:
 
 ![](images/guiao9/corruptedecb.png)
 
-Utilizando o comando seguinte, podemos verificar o número de bytes que diferem nos dois arquivos:
+Para verificar o número real de bytes corrompidos, podemos utilizar o seguinte comando:
 
 ![](images/guiao9/cmpecb.png)
 
 "cmp -l" mostra os bytes que diferem nos dois arquivos, e "wc -l" retorna a quantidade de linhas do output do comando anterior.
 
-O arquivo original teve 16 bytes corrompidos com o modo "ecb".
+Ou seja, no modo de cifra ECB, tivemos 16 bytes corrompidos no total. Considerando que o algoritmo de cifra utilizado é o AES-128, isso corresponde a um bloco inteiro (128 bits = 16 bytes), o que é previsível para este modo de cifra: cada bloco é cifrado isoladamente. Se um bloco do criptograma for corrompido, o bloco correspondente no *plaintext* ficará totalmente corrompido.
 
-### Cifra com cbc
+### Cifra com CBC
 
-Ciframos o arquivo "plaintext.txt" novamente, com o modo "cbc":
+Ciframos o arquivo "plaintext.txt" novamente, com o modo CBC:
 
 ![](images/guiao9/encryptcbc5.png)
 
@@ -213,27 +213,35 @@ Ao decifrar o arquivo, verificamos a corrupção:
 
 ![](images/guiao9/corruptedcbc.png)
 
-Utilizando novamente o comando de comparação:
+Utilizando novamente o comando de comparação para descobrir os bytes corrompidos:
 
 ![](images/guiao9/cmpcbc.png)
 
-Ou seja, tivemos 17 bytes corrompidos com o modo "cbc".
+Ou seja, tivemos 17 bytes corrompidos com o modo CBC. Isso é esperado: a cifragem de cada bloco depende do bloco anterior, bem como a decifragem. Assim, se um byte do criptograma for alterado, todo o *plaintext* do bloco correspondente ficará corrompido (16 bytes) e também o byte na mesma posição do bloco seguinte. A partir desse ponto, os blocos seguintes serão decifrados corretamente, pois não dependem mais do bloco corrompido.
 
-### Cifra com ctr
+### Cifra com CTR
 
-Ciframos o arquivo "plaintext.txt" novamente, com o modo "ctr":
+Ciframos o arquivo "plaintext.txt" novamente, com o modo CTR:
 
+![](images/guiao9/encryptctr5.png)
 
+Utilizamos o *bless* para modificar o byte 50:
 
-Utilize o ficheiro plaintext.txt gerado anteriormente, e considere os três modos de cifra especificados anteriormente. Altere o byte 50*G, onde G é o número do vosso grupo prático (de 1 a 9) -- pode utilizar o editor bless, já instalado no ambiente disponibilizado.
+![](images/guiao9/normalctr.png)
 
-Para cada um dos modos de cifra, indique quantos bytes de informação se perdem ao corromper um byte do criptograma. Verifique se esta perda se verifica quando se tenta ler a decifração dos criptogramas alterados.
+![](images/guiao9/corruptctr.png)
 
-Pista: desenhar o esquema correspondente a estes modos de cifra tende a facilitar a análise.
+Verificamos a corrupção, ao decifrar o arquivo:
+
+![](images/guiao9/corruptedctr.png)
+
+Utilizamos o comando de comparação para verificar os bytes corrompidos:
+
+![](images/guiao9/cmpctr.png)
+
+Tivemos apenas 1 byte corrompido com o modo CTR. Como a decifragem deste modo é feita byte a byte com a *keystream* (chave + VI + contador) dada, modificar um byte num bloco do criptograma afeta apenas um byte do texto original. O resto do bloco e quaisquer blocos vizinhos permanecem intactos, já que não existe dependência de blocos neste modo.
 
 ## Desafio
-
-![](images/guiao9/desafio.png)
 
 O desafio consiste em decifrar o criptograma fornecido, encriptado por uma cifra de Vigènere com uma chave de tamanho 5 e símbolos de A-Z e 0-9.
 
