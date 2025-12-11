@@ -151,15 +151,15 @@ cujo MAC será calculado a partir da seguinte mensagem:
 ```
 
 Obtivemos o seguinte MAC:
-![](/images/guiao10/legitmac.png)
+![](images/guiao10/legitmac.png)
 
 A esta mensagem, planeamos agregar o comando "download", pelo que precisamos de agregar a parcela "&download=secret.txt" ao URL, como pedido no guião.
 Sendo assim, adaptando o código do length_ext.c fornecido no guião ao nosso objetivo, obtemos o seguinte programa:
-![](/images/guiao10/maccalccode.png)
+![](images/guiao10/maccalccode.png)
 
 Em que substituímos os argumentos de htole32 por parcelas de 8 elementos do MAC e, em SHA256_Update, colocamos "&download=secret.txt".
 Após compilar e executar o length_ext, obtemos o nosso novo MAC:
-![](/images/guiao10/finalmac.png) 
+![](images/guiao10/finalmac.png) 
 
 Agora, podemos construir o novo URL com o seguinte formato, como referido no guião:
 ``` bash
@@ -178,6 +178,6 @@ http://www.seedlab-hashlen.com/?myname=HugoAlves&uid=1002&lstcmd=1%80%00%00%00%0
 ```
 
 Entrando no site com este URL, obtemos:
-![](/images/guiao10/task3result.png)
+![](images/guiao10/task3result.png)
 
 Isto indica que o ataque foi bem sucedido. Com isto, conseguimos demonstrar que é possível, sabendo o MAC de um pedido válido, forjar um pedido novo sem precisarmos conhecer as chaves MAC.
