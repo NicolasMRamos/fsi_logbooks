@@ -89,20 +89,52 @@ Como é possível verificar na imagem, o comando especificado também não é ex
 Para a tarefa 2, será necessário construir o *padding* do bloco de SHA-256 para a seguinte mensagem:
 
 ``` bash
-983abe:myname=MauricioSardinha&uid=1002&lstcmd=1
+983abe:myname=NicolasRamos&uid=1002&lstcmd=1
 ```
 
-Esta mensagem possui 48 bytes, ou seja, 48 * 8 = 384 bits. Isso corresponde a 0x180 em hexadecimal.
+Esta mensagem possui 44 bytes, ou seja, 44 * 8 = 352 bits. Isso corresponde a 0x160 em hexadecimal.
 
-Para completar os 64 bytes do bloco do SHA-256, faltam 16 bytes de padding, que deverão ser preenchidos com bytes "vazios" e o tamanho da mensagem no final.
+Para completar os 64 bytes do bloco do SHA-256, faltam 64 - 44 = 20 bytes de padding, que deverão ser preenchidos com bytes "vazios" e o tamanho da mensagem no final.
 
 ``` bash
+Mensagem original: 983abe:myname=NicolasRamos&uid=1002&lstcmd=1
+Padding com zeros: %80%00%00%00%00%00%00%00%00%00%00%00
+Tamanho da mensagem: %00%00%00%00%00%00%01%60
+```
+
+Utilizamos um byte %80, onze bytes %00 e oito bytes no fim para o tamanho da mensagem, em ordem *Big-Endian*.
+
+Nota: "\x" foi substituído por "%", como indicado no guião.
+
+No final, temos:
+
+``` bash
+983abe:myname=NicolasRamos&uid=1002&lstcmd=1%80%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%01%60
+```
+
+### Extra: Padding dos restantes integrantes do grupo
+
+O mesmo processo foi utilizado para obter o *padding* dos restantes elementos do grupo.
+
+Mauricio Sardinha:
+
+``` bash
+Mensagem original: 983abe:myname=MauricioSardinha&uid=1002&lstcmd=1
+Padding com zeros: %80%00%00%00%00%00%00%00
+Tamanho da mensagem: %00%00%00%00%00%00%01%80
+
 983abe:myname=MauricioSardinha&uid=1002&lstcmd=1%80%00%00%00%00%00%00%00%00%00%00%00%00%00%01%80
 ```
 
-Utilizamos um byte %80, 13 bytes %00 e dois bytes no fim para o tamanho da mensagem, em ordem *Big-Endian*.
+Hugo Alves:
 
-Nota: "\x" foi substituído por "%", como indicado no guião.
+``` bash
+Mensagem original: 983abe:myname=HugoAlves&uid=1002&lstcmd=1
+Padding com zeros: %80%00%00%00%00%00%00%00%00%00%00%00%00%00%00
+Tamanho da mensagem: %00%00%00%00%00%00%01%48
+
+983abe:myname=HugoAlves&uid=1002&lstcmd=1%80%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%01%48
+```
 
 ## Tarefa 3
 
