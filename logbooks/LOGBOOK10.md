@@ -34,11 +34,15 @@ Com o *uid*, *key* e *myname* determinadas, podemos finalmente determinar o MAC:
 
 ![](images/guiao10/lstcmdmac.png)
 
-MAC: **bceaf13a5fac046106e56d0295b3b78903f8121c3e35f367f19af884f650199d**
+``` bash
+MAC: bceaf13a5fac046106e56d0295b3b78903f8121c3e35f367f19af884f650199d
+```
 
 Por último, só resta enviar o pedido com os dados corretos no browser:
 
-**http://www.seedlab-hashlen.com/?myname=NicolasRamos&uid=1002&lstcmd=1&mac=bceaf13a5fac046106e56d0295b3b78903f8121c3e35f367f19af884f650199d**
+``` bash
+http://www.seedlab-hashlen.com/?myname=NicolasRamos&uid=1002&lstcmd=1&mac=bceaf13a5fac046106e56d0295b3b78903f8121c3e35f367f19af884f650199d
+```
 
 ![](images/guiao10/task1concluded.png)
 
@@ -54,16 +58,51 @@ Aqui, será necessário calcular um novo MAC, já que o pedido tem um formato di
 
 ![](images/guiao10/downloadmac.png)
 
-MAC: **bfb1596cde4ce40925284d29125f507d605961d5f8827595c2c6fe7d4e9ebb65**
+``` bash
+MAC: bfb1596cde4ce40925284d29125f507d605961d5f8827595c2c6fe7d4e9ebb65
+```
 
 Podemos enviar o pedido ao servidor agora:
 
-**www.seedlab-hashlen.com/?myname=NicolasRamos&uid=1002&lstcmd=0&download=secret.txt&mac=bfb1596cde4ce40925284d29125f507d605961d5f8827595c2c6fe7d4e9ebb65**
+``` bash
+www.seedlab-hashlen.com/?myname=NicolasRamos&uid=1002&lstcmd=0&download=secret.txt&mac=bfb1596cde4ce40925284d29125f507d605961d5f8827595c2c6fe7d4e9ebb65
+```
 
 ![](images/guiao10/subtask1concluded.png)
 
 Conseguimos, então, os conteúdos do arquivo "secret.txt".
 
+### E se o MAC for inválido?
+
+Se enviarmos um pedido com um MAC inválido, o site nos avisa disso.
+
+``` bash
+Exemplo de teste: http://www.seedlab-hashlen.com/?myname=NicolasRamos&uid=1002&lstcmd=0&download=secret.txt&mac=2
+```
+
+![](images/guiao10/invalidmac.png)
+
+Como é possível verificar na imagem, o comando especificado também não é executado.
+
 ## Tarefa 2
 
+Para a tarefa 2, será necessário construir o *padding* do bloco de SHA-256 para a seguinte mensagem:
+
+``` bash
+983abe:myname=MauricioSardinha&uid=1002&lstcmd=1
+```
+
+Esta mensagem possui 48 bytes, ou seja, 48 * 8 = 384 bits. Isso corresponde a 0x180 em hexadecimal.
+
+Para completar os 64 bytes do bloco do SHA-256, faltam 16 bytes de padding, que deverão ser preenchidos com bytes "vazios" e o tamanho da mensagem no final.
+
+``` bash
+983abe:myname=MauricioSardinha&uid=1002&lstcmd=1%80%00%00%00%00%00%00%00%00%00%00%00%00%00%01%80
+```
+
+Utilizamos um byte %80, 13 bytes %00 e dois bytes no fim para o tamanho da mensagem, em ordem *Big-Endian*.
+
+Nota: "\x" foi substituído por "%", como indicado no guião.
+
 ## Tarefa 3
+
