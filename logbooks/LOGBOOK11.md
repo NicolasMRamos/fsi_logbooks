@@ -22,7 +22,7 @@ Para a tarefa 1, temos de criar uma organização *root* CA, para podermos emiti
 
 ![](images/guiao11/cpssl.png)
 
-2. Editar o arquivo, de modo a descomentar a linha indicada:
+2. Editar o arquivo, de modo a descomentar a linha "unique_subject":
 
 ![](images/guiao11/uncomment.png)
 
