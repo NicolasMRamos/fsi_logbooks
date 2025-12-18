@@ -50,6 +50,14 @@ E informações relacionadas à chave:
 ![](images/guiao11/chaveinfo4.png)
 ![](images/guiao11/chaveinfo5.png)
 
+### Questões
+
+1. Que parte do certificado indica que isto é um certificado CA?
+
+2. Que parte do certificado indica que isto é um certificado *self-signed*?
+
+3. No algoritmo RSA, temos um expoente público *e*, um expoente privado *d*, um módulo *n* e dois números secretos *p* e *q*, tal que n = *pq*. Por favor, identifica os valores destes elementos nos teus ficheiros de certificado e chaves.
+
 ## Tarefa 2
 
 Para a tarefa 2, vamos gerar um pedido de certificado para a *root* CA criada assinar e certificar um *web server*.
