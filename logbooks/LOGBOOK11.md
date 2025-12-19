@@ -54,9 +54,37 @@ E também as informações relacionadas à chave:
 
 1. Que parte do certificado indica que isto é um certificado CA?
 
+No output do certificado, temos:
+
+![](images/guiao11/questao1.png)
+
+Essa extensão "Basic Constraints" identifica que o certificado tem permissão para assinar outros certificados, ou seja, é uma CA.
+
 2. Que parte do certificado indica que isto é um certificado *self-signed*?
 
+Um certificado é *self-signed* quando o *Issuer* (quem assina) é igual ao *Subject* (quem recebe).
+
+É possível verificar, no certificado, que isso acontece:
+
+![](images/guiao11/questao2.png)
+![](images/guiao11/questao2_2.png)
+
 3. No algoritmo RSA, temos um expoente público *e*, um expoente privado *d*, um módulo *n* e dois números secretos *p* e *q*, tal que n = *pq*. Por favor, identifica os valores destes elementos nos teus ficheiros de certificado e chaves.
+
+Expoente público *e*: 65537
+
+Expoente privado *d*: número após a linha *privateExponent*.
+
+![](images/guiao11/questao3_privex.png)
+
+Módulo *n*: número após a linha *modulus:*.
+
+![](images/guiao11/questao3_mod.png)
+
+Números secretos *p* e *q*: números após as linhas *prime1* e *prime2*, respectivamente:
+
+![](images/guiao11/questao3_p1p2.png)
+
 
 ## Tarefa 2
 
