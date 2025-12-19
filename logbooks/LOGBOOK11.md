@@ -200,7 +200,51 @@ Com isso, ao acessar o site normalmente, já não recebemos mais o aviso de segu
 
 Para a tarefa 5, simularemos um ataque MITM por meio do DNS.
 
-1. Criamos o site "www.instagram.com" falso e o assinamos com nossa *root* CA, como foi feito nas tarefas 2 e 3.
+# TO CHANGE (MOVER PARA TASK 6 E ADAPTAR PARA A 5)
+
+2. Adicionamos este site ao Dockerfile e ao Apache, como foi feito na tarefa 4:
+
+2.1. Colocamos o certificado da *root* CA e o certificado e chave gerados para "www.instagram.com" no diretório "image_www/certs".
+
+2.2. Criamos o arquivo de configuração do Apache:
+
+![](images/guiao11/configexample.png)
+
+2.3. Criamos uma página para o site:
+
+![](images/guiao11/fooled.png)
+
+2.4. Modificamos o Dockerfile para incluir o novo site no setup do container:
+
+![](images/guiao11/dockerex.png)
+![](images/guiao11/dockerex2.png)
+
+2.5. Reconstruímos o container (*dcdown*, *dcbuild*, *dcup*) e iniciamos o servidor Apache:
+
+![](images/guiao11/apachestartex.png)
+
+# KEEP STEP 3
+3. Modificamos o arquivo "/etc/hosts" para incluir o site falso:
+
+![](images/guiao11/dnssetupex.png)
+
+Quando o DNS é resolvido, a vítima (no caso, nós, já que se trata de um ataque simulado) acessará o "www.instagram.com" malicioso.
+
+4. Ao tentar acessar ao site "www.instagram.com" com https, verificamos que o desvio foi bem sucedido, no entanto, o browser emitiu um aviso:
+
+![](images/guiao11/warning_insta.png)
+
+Isto deve-se ao facto de, no certificado, o nome se referir a "www.nicolas2025.com" (pois foi para este que o certificado foi emitido) e não a "www.instagram.com". Apesar de ser assinado por uma CA reconhecida pelo browser, como o nome no certificado não coincide com o endereço esperado, o browser considera o certificado inválido e lança o aviso.
+
+# TIL HERE
+
+## Tarefa 6
+
+Ao contrário do sucedido na tarefa 5, na tarefa 6 temos acesso à *private key* da CA, o que nos permite criar um novo certificado, desta vez para "www.instagram.com" e assiná-lo como se fossemos a CA. 
+
+Para isso fizemos o seguinte:
+
+1. Criamos o certificado para o site "www.instagram.com" falso e assinamos com a nossa *root* CA, como foi feito nas tarefas 2 e 3.
 
 1.1. Criação do pedido pelo site:
 
@@ -234,17 +278,8 @@ Para a tarefa 5, simularemos um ataque MITM por meio do DNS.
 
 ![](images/guiao11/apachestartex.png)
 
-3. Modificamos o arquivo "/etc/hosts" para incluir o site falso:
-
-![](images/guiao11/dnssetupex.png)
-
-Quando o DNS é resolvido, a vítima (no caso, nós, já que se trata de um ataque simulado) acessará o "www.instagram.com" malicioso.
-
-4. Ao tentar acessar no site "www.instagram.com", verificamos que o ataque foi bem sucedido:
+3. Ao tentar acessar ao site "www.instagram.com" com https, verificamos que o desvio foi bem sucedido e, ao contrário do resultado na tarefa 5, o site foi aberto sem qualquer aviso por parte do browser:
 
 ![](images/guiao11/instafooled.png)
 
-Ao invés de sermos direcionados ao site oficial do Instagram, acessamos o site falso.
-
-## Tarefa 6
-
+Como conseguimos acesso à chave privada da CA, isto permitiu-nos forjar um novo certificado, desta vez, com os dados adequados (como o nome) do "www.instagram.com". Ou seja, conseguimos gerar um certificado válido para o site e, como o browser confia na CA cuja chave foi usada para forjar este certificado e os dados dele coincidem e são válido, o browser confiou no site e não lançou o aviso como anteriormente.
