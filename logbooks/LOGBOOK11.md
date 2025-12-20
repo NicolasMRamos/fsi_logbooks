@@ -200,43 +200,38 @@ Com isso, ao acessar o site normalmente, já não recebemos mais o aviso de segu
 
 Para a tarefa 5, simularemos um ataque MITM por meio do DNS.
 
-# TO CHANGE (MOVER PARA TASK 6 E ADAPTAR PARA A 5)
+1. Adicionamos o site "www.facebook.com" ao Dockerfile e ao Apache, como foi feito na tarefa 4:
 
-2. Adicionamos este site ao Dockerfile e ao Apache, como foi feito na tarefa 4:
-
-2.1. Colocamos o certificado da *root* CA e o certificado e chave gerados para "www.instagram.com" no diretório "image_www/certs".
-
-2.2. Criamos o arquivo de configuração do Apache:
+1.1. Criamos o arquivo de configuração do Apache:
 
 ![](images/guiao11/configexample.png)
 
-2.3. Criamos uma página para o site:
+1.2. Criamos uma página para o site:
 
-![](images/guiao11/fooled.png)
+![](images/guiao11/fooledexample.png)
 
-2.4. Modificamos o Dockerfile para incluir o novo site no setup do container:
+1.3. Modificamos o Dockerfile para incluir o novo site no setup do container:
 
 ![](images/guiao11/dockerex.png)
 ![](images/guiao11/dockerex2.png)
 
-2.5. Reconstruímos o container (*dcdown*, *dcbuild*, *dcup*) e iniciamos o servidor Apache:
+2. Reconstruímos o container (*dcdown*, *dcbuild*, *dcup*) e iniciamos o servidor Apache:
 
 ![](images/guiao11/apachestartex.png)
 
-# KEEP STEP 3
 3. Modificamos o arquivo "/etc/hosts" para incluir o site falso:
 
 ![](images/guiao11/dnssetupex.png)
 
-Quando o DNS é resolvido, a vítima (no caso, nós, já que se trata de um ataque simulado) acessará o "www.instagram.com" malicioso.
+Quando o DNS é resolvido, a vítima (no caso, nós, já que se trata de um ataque simulado) acessará o "www.facebook.com" malicioso.
 
-4. Ao tentar acessar ao site "www.instagram.com" com https, verificamos que o desvio foi bem sucedido, no entanto, o browser emitiu um aviso:
+4. Ao tentar acessar ao site "www.facebook.com" com https, verificamos que o desvio foi bem sucedido, no entanto, o browser emitiu um aviso:
 
-![](images/guiao11/warning_insta.png)
+![](images/guiao11/warning_fb.png)
 
-Isto deve-se ao facto de, no certificado, o nome se referir a "www.nicolas2025.com" (pois foi para este que o certificado foi emitido) e não a "www.instagram.com". Apesar de ser assinado por uma CA reconhecida pelo browser, como o nome no certificado não coincide com o endereço esperado, o browser considera o certificado inválido e lança o aviso.
-
-# TIL HERE
+Isto deve-se ao facto de, no certificado, o nome se referir a "www.nicolas2025.com" (pois foi para este que o certificado foi emitido) e não a "www.facebook.com". Apesar de ser assinado por uma CA reconhecida pelo browser, como o nome no certificado não coincide com o endereço esperado, o browser considera o certificado inválido e lança o aviso. \
+O domínio “www.facebook.com” requer uma ligação segura e utiliza políticas de segurança fortes, por isso o browser não permite estabelecer a ligação sem um certificado válido nem permite adicionar uma exceção manual. \
+Desta forma, o mecanismo PKI, em conjunto com políticas como HSTS (mecanismo que obriga o navegador a usar sempre HTTPS e rejeitar conexões inseguras), impede que o atacante intercepte a comunicação, demonstrando como o HTTPS protege contra ataques MITM.
 
 ## Tarefa 6
 
@@ -248,12 +243,12 @@ Para isso fizemos o seguinte:
 
 1.1. Criação do pedido pelo site:
 
-![](images/guiao11/reqexample.png)
+![](images/guiao11/reqinsta.png)
 
 1.2. Aceitação do pedido pela *root* CA:
 
-![](images/guiao11/acceptexample.png)
-![](images/guiao11/acceptexample2.png)
+![](images/guiao11/acceptinsta.png)
+![](images/guiao11/acceptinsta2.png)
 
 **Nota**: para o último comando funcionar, foi necessário mover, temporariamente, o certificado da *root* CA criada para o mesmo diretório no qual o comando seria executado e onde estava o arquivo de configuração do *openssl*. 
 
@@ -263,20 +258,20 @@ Para isso fizemos o seguinte:
 
 2.2. Criamos o arquivo de configuração do Apache:
 
-![](images/guiao11/configexample.png)
+![](images/guiao11/configinsta.png)
 
 2.3. Criamos uma página para o site:
 
-![](images/guiao11/fooled.png)
+![](images/guiao11/fooledinsta.png)
 
 2.4. Modificamos o Dockerfile para incluir o novo site no setup do container:
 
-![](images/guiao11/dockerex.png)
-![](images/guiao11/dockerex2.png)
+![](images/guiao11/dockerinsta.png)
+![](images/guiao11/dockerinsta2.png)
 
 2.5. Reconstruímos o container (*dcdown*, *dcbuild*, *dcup*) e iniciamos o servidor Apache:
 
-![](images/guiao11/apachestartex.png)
+![](images/guiao11/apachestartinsta.png)
 
 3. Ao tentar acessar ao site "www.instagram.com" com https, verificamos que o desvio foi bem sucedido e, ao contrário do resultado na tarefa 5, o site foi aberto sem qualquer aviso por parte do browser:
 
