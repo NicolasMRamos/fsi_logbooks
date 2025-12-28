@@ -54,6 +54,35 @@ Ao tentar executar o programa, recebemos um erro de permissão:
 
 Não é possível executar o programa sem privilégios de *root*.
 
+#### Análise dos Pacotes Capturados
+
+Os pacotes capturados são divididos em quatro campos: *Ethernet*, *IP*, Tipo de pacote, *RAW*.
+
+O campo *Ethernet* mostra:
+* Os endereços MAC de origem e destino do pacote.
+* Protocolo encapsulado no pacote (neste caso, IPv4).
+
+![](images/guiao13/ethernetfield.png)
+
+Nota: Este campo corresponde à camada de ligação de dados (*layer-2*). Dependendo do meio físico utilizado, este campo pode variar em nome e atributos (por exemplo, IEEE 802.11 em redes Wi-Fi).
+
+O campo *IP* mostra:
+* Informações sobre o pacote e seu conteúdo (len, chksum, id...).
+* Tipo de pacote (campo *proto*, neste caso é um pacote ICMP)
+* Endereços IP de origem e destino.
+
+![](images/guiao13/ipfield.png)
+
+O terceiro campo representa o tipo de pacote (ICMP, TCP...). Neste caso temos um pacote ICMP, então temos:
+* Informações sobre a categoria deste tipo de pacote (ICMP Echo Request, um ```ping```).
+* Informação sobre a numeração e ordem do pacote, para associar os pedidos e respostas.
+
+![](images/guiao13/icmpfield.png)
+
+O campo *RAW* mostra o conteúdo do pacote:
+
+![](images/guiao13/rawfield.png)
+
 ### Task 1.1B
 
 Para esta tarefa, filtraremos os pacotes capturados pelo nosso programa utilizando o BPF (*Berkeley Packet Filter*).
