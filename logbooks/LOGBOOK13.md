@@ -130,7 +130,9 @@ Se tentarmos dar ```ping``` à outra subnet, os pacotes não são mostrados:
 
 ## Task 1.2
 
-Para esta tarefa, enviaremos um pacote ICMP Echo Request de um IP de origem arbitrária para o host B (IP 10.9.0.6).
+Para esta tarefa, enviaremos pacotes ICMP Echo Request de IPs de origem arbitrária para o host B (IP 10.9.0.6).
+
+### IP Default (atacante)
 
 1. Modificamos ```sniffer.py``` de forma a que capture pacotes do tipo ICMP:
 
@@ -152,6 +154,26 @@ Para esta tarefa, enviaremos um pacote ICMP Echo Request de um IP de origem arbi
 ![](images/guiao13/sniffreq2.png)
 ![](images/guiao13/sniffrep.png)
 ![](images/guiao13/sniffrep2.png)
+
+Como é possível observar neste output, a máquina de origem é o IP da máquina do atacante, que é o *default* quando o atributo "src" não é especificado.
+
+### IP arbitrário
+
+Para gerarmos um pacote com origem num IP específico, modificamos o atributo "src". Neste caso, modificamos para um IP arbitrário (1.2.3.4):
+
+![](images/guiao13/modifiedarbcode.png)
+
+Após executar ```spoofer.py```, verificamos o output do ```sniffer.py```:
+
+![](images/guiao13/sniffarbreq.png)
+![](images/guiao13/sniffarbrep.png)
+
+Obtemos dois pacotes, um de pedido e um de resposta, o que indica que o host B recebeu o pacote de IP arbitrário com sucesso, enviando de volta uma resposta.
+
+Ao testar com outro IP arbitrário (5.6.7.8), recebemos o mesmo resultado:
+
+![](images/guiao13/sniffarbreq2.png)
+![](images/guiao13/sniffarbrep2.png)
 
 ## Task 1.3
 
