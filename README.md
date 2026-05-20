@@ -1,7 +1,7 @@
-# Context
-Repository for the exercises done in FSI 25/26.
+# FSI
+Repository containing the exercises and logs developed for the FSI 25/26 @FEUP.
 
-Each logbook contains a different type of security concern, and how to exploit and protect against these issues.
+Each logbook focuses on a different cybersecurity topic, covering vulnerabilities, exploitation methods, and protection mechanisms.
 
 # Group Members
 Nicolas Ramos - up202304442
